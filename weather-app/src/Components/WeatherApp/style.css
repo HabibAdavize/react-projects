@@ -1,0 +1,31 @@
+
+
+/* Your other CSS rules here */
+.container{
+    padding: 5rem 0 5rem; 
+    height: 100%;
+}
+.content-wrapper{
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100%;
+}
+.card-wrapper{
+    width: 100%; 
+    max-width: 25rem
+}
+.card{
+    color: #4B515D; 
+    border-radius: 35px;
+    background-color: white;
+}
+.card-body{
+    padding: 1rem;
+}
+.top{
+    display: flex; 
+}
+.country{
+    flex-grow: 1;
+}
