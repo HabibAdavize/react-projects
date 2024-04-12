@@ -1,31 +1,166 @@
-
-
-/* Your other CSS rules here */
-.container{
-    padding: 5rem 0 5rem; 
-    height: 100%;
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0 auto;
+    max-width: 960px;
+    overflow: hidden;
 }
-.content-wrapper{
+
+.card {
+    background-image: linear-gradient(180deg,#ebfffc 0%, #4B515D 100%) ;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+    gap: 14px;
+}
+
+.top input{
+    display: flex;
+    border: none;
+    outline: none;
+    height: 78px;
+    width: 362px;
+    background: #ebfffc;
+    border-radius: 40px;
+    padding-left: 40px;
+    font-size: 20px;
+    font-weight: 400px;
+    color: #4B515D;
+}
+@media (max-width: 768px) {
+    .top input {
+            width: 80%;
+            height: 60px;
+            font-size: 16px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+    .top input {
+            width: 90%;
+            height: 50px;
+            font-size: 14px;
+        }
+    }
+
+.search-icon{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 40px;
+    width: 78px;
+    height: 78px;
+    cursor: pointer;
+    background-color: #ebfffc;
+}
+
+.middle{
     display: flex; 
+    flex-direction: column; 
     justify-content: center; 
     align-items: center; 
-    height: 100%;
+    gap: 5px;
 }
-.card-wrapper{
-    width: 100%; 
-    max-width: 25rem
-}
-.card{
+
+.weather-temp{
+    font-size: 40px; 
+    font-weight: lighter; 
     color: #4B515D; 
-    border-radius: 35px;
-    background-color: white;
+    margin-top: 30px;
+    margin-bottom: 0;
 }
-.card-body{
-    padding: 1rem;
+
+.weather-location{
+    font-size: 0.875rem; 
+    color: #ebfffc;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
-.top{
+
+@media (max-width: 768px) {
+    .weather-temp {
+            font-size: 2rem;
+        }
+    .weather-location {
+            font-size: 0.75rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+    .weather-temp {
+            font-size: 1.5rem;
+        }
+    .weather-location {
+            font-size: 0.625rem;
+        }
+    }
+
+.bottom{
     display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    gap:  5rem;
 }
-.country{
-    flex-grow: 1;
+
+.data{
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.calc{
+    margin-left: 0.25rem;
+    color: #ebfffc;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.weather-image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+@media (max-width: 768px) {
+    .weather-image img {
+        width: 80%;
+        height: auto;
+    }
+    .calc {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+  
+    .weather-image img {
+        width: 90%;
+        height: auto;
+    }
+    .calc {
+        font-size: 12px;
+    }
 }
