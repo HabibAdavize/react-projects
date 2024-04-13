@@ -14,7 +14,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 30px;
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
 }
 
 .card-body {
@@ -67,22 +67,25 @@
     align-items: center;
     justify-content: center;
     border-radius: 40px;
-    width: 78px;
+    width: 84px;
     height: 78px;
     cursor: pointer;
-    /*background-color: #ebfffc;*/
+    background-color: #ebfffc;
 }
 @media (max-width: 768px) {
     .search-icon {
-         width: 60px;
-         height: 60px;
+         width: 74px;
+         height: 58px;
      }
  }
  
  @media (max-width: 480px) {
     .search-icon {
-         width: 50px;
-         height: 50px;
+         width: 54px;
+         height: 38px;
+     }
+     .search-icon img{
+        width: 15px;
      }
  }
 
