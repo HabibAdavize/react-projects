@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './style.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// Import icons
+// Imported icons
 import search_icon from '../Assets/search.png'
 import clear_icon from '../Assets/clear.png'
 import cloud_icon from '../Assets/cloud.png'
@@ -11,10 +11,10 @@ import rain_icon from '../Assets/rain.png'
 import snow_icon from '../Assets/snow.png'
 import wind_icon from '../Assets/wind.png'
 
-// Define the API key
+// API key
 const api_key = "38930843f10c4fa62a388f78da650272";
 
-// Define the WeatherComponent
+//WeatherComponent
 const index = () => {
     // Define the state variables
     const [city, setCity] = useState("");
@@ -25,21 +25,21 @@ const index = () => {
     const [feelsLike, setFeelsLike] = useState("");
     const [weatherIcon, setIcon] =  useState(cloud_icon);
 
-    // Define the search function
+    // Search function
     const search = async () => {
-        // Check if the input is empty
+        // Checking if the input is empty
         if (city === "") {
             return ;
         }
 
-        // Define the API URL
+        //API URL
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=Metric&appid=${api_key}`;
 
-        // Fetch the data from the API
+        // Fetch data from the API
         const response = await fetch(url);
         const data = await response.json();
 
-        // Update the state variables
+        // Updating the use state variables
         setTemperature(Math.round(data.main.temp) + "°C");
         setLocation(data.name);
         setCity("");
@@ -64,12 +64,12 @@ const index = () => {
         }
     }
 
-    // Define the input change handler
+    //input change handler
     const handleInputChange = (event) => {
         setCity(event.target.value);
     }
 
-    // Use the useEffect hook to call the search function when the component mounts
+    // Using the useEffect hook to call the search function when the component mounts
     useEffect(() => {
         search();
     }, []);
