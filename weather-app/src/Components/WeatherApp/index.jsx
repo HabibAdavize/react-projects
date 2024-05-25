@@ -40,25 +40,25 @@ const index = () => {
         const data = await response.json();
 
         // Updating the use state variables
-        setTemperature(Math.round(data.main.temp) + "°C");
-        setLocation(data.name);
+        setTemperature(prevTemperature => Math.round(data.main.temp) + "°C");
+        setLocation(prevLocation => data.name);
         setCity("");
-        setHumidity(data.main.humidity + "%");
-        setWindSpeed(data.wind.speed + " m/s");
-        setFeelsLike(Math.round(data.main.feels_like) + "°C");
+        setHumidity(prevHumidty => data.main.humidity + "%");
+        setWindSpeed(prevWindSpeed => data.wind.speed + " m/s");
+        setFeelsLike(prevFeelsLike => Math.round(data.main.feels_like) + "°C");
 
         if(data.weather[0].icon==="01d" || data.weather[0].icon==="01n"){
-            setIcon(clear_icon);
+            setIcon(prevIcon => clear_icon);
         }else if(data.weather[0].icon==="02d" || data.weather[0].icon==="02n"){
-            setIcon(cloud_icon)
+            setIcon(prevIcon => cloud_icon)
         }else if(data.weather[0].icon==="03d" || data.weather[0].icon==="03n"){
-            setIcon(drizzle_icon)
+            setIcon(prevIcon => drizzle_icon)
         }else if(data.weather[0].icon==="09d" || data.weather[0].icon==="09n"){
-            setIcon(rain_icon)
+            setIcon(prevIcon => rain_icon)
         }else if(data.weather[0].icon==="010d" || data.weather[0].icon==="010n"){
-            setIcon(rain_icon)
+            setIcon(prevIcon => rain_icon)
         }else if(data.weather[0].icon==="013d" || data.weather[0].icon==="013n"){
-            setIcon(snow_icon)
+            setIcon(prevIcon => snow_icon)
         }else{
             setIcon(clear_icon)
         }
