@@ -4,6 +4,10 @@ $btn-hover-color: #6b8dff;
 body {
     margin: 0;
     padding: 0;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
 
     .login {
         background: $primary-color;
@@ -15,13 +19,14 @@ body {
 
         .form-wrapper {
             background-color: white;
-            height: 300px;
+            height: auto;
             width: 400px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            padding: 20px;
 
             form {
                 display: flex;

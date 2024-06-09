@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 export default function Register() {
   const [form, setForm] = useState({ email: "", password: "", displayName: "" });
   const [error, setError] = useState("");
+  const[success, setSuccess] = useState("")
 
   const getDetails = (e) => {
     const { name, value } = e.target;
@@ -12,7 +13,7 @@ export default function Register() {
       ...prevForm,
       [name]: value,
     }));
-  };
+  };1
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +28,7 @@ export default function Register() {
       await updateProfile(res.user, {
         displayName: form.displayName,
       });
-      console.log("User registered and profile updated:", res.user);
+      setSuccess("Registration Successful. proceed to login", res.user);
     } catch (error) {
       console.error("Error during registration", error);
       setError("An error occurred during registration");
@@ -65,6 +66,7 @@ export default function Register() {
           <button type="submit">Register</button>
         </form>
         {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
       </div>
     </div>
   );
