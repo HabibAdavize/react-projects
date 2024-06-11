@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase';
+import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 export default function Register() {
   const [form, setForm] = useState({ email: "", password: "", displayName: "" });
   const [error, setError] = useState("");
-  const[success, setSuccess] = useState("")
+  const[success, setSuccess] = useState("");
+  const history = useHistory;
 
   const getDetails = (e) => {
     const { name, value } = e.target;
@@ -23,8 +26,9 @@ export default function Register() {
       return;
     }
 
-    try {
+    try {    
       const res = await createUserWithEmailAndPassword(auth, form.email, form.password);
+      history.push('/chat')
       await updateProfile(res.user, {
         displayName: form.displayName,
       });
@@ -67,6 +71,10 @@ export default function Register() {
         </form>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
+
+        <p>[]
+          Already have an account? <Link to="/">Login here</Link>
+        </p>
       </div>
     </div>
   );

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase.jsx";
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-export default function login() {
-  const [getForm, setGetForm] = useState([{ email: "", password: "" }]);
+export default function Login() {
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const history = useHistory
 
   const getDetails = (e) => {
     const { name, value } = e.target;
-    setGetForm((prevForm) => ({
+    setForm((prevForm) => ({
       ...prevForm,
       [name]: value,
     }));
@@ -19,45 +20,47 @@ export default function login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!getForm.email || !getForm.password) {
+    if (!form.email || !form.password) {
       setError("All fields are required");
       return;
     }
+
     try {
-      const res = await signInWithEmailAndPassword(
-        auth,
-        getForm.email,
-        getForm.password
-      );
-      setSuccess("You're logged in", res.user);
-    } catch {
+      const res = await signInWithEmailAndPassword(auth, form.email, form.password);
+      history.push('/chat');
+      console.log("User logged in:", res.user);
+    } catch (error) {
       console.error("Error during login", error);
       setError("Invalid email or password");
     }
   };
+
   return (
     <div className="login">
       <div className="form-wrapper">
-        <span></span>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
             name="email"
-            value={getForm.email}
+            value={form.email}
             onChange={getDetails}
             placeholder="Email"
+            required
           />
           <input
             type="password"
             name="password"
-            value={getForm.password}
+            value={form.password}
             onChange={getDetails}
             placeholder="Password"
+            required
           />
-          <button>Login</button>
+          <button type="submit">Login</button>
         </form>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <p>
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
       </div>
     </div>
   );
