@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase';
 import { Link } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+//import { useHistory } from 'react-router-dom';
 
 export default function Register() {
   const [form, setForm] = useState({ email: "", password: "", displayName: "" });
   const [error, setError] = useState("");
   const[success, setSuccess] = useState("");
-  const history = useHistory;
+  //const history = useHistory;
 
   const getDetails = (e) => {
     const { name, value } = e.target;
@@ -28,12 +28,16 @@ export default function Register() {
 
     try {    
       const res = await createUserWithEmailAndPassword(auth, form.email, form.password);
-      history.push('/chat')
+     // history.push('/chat')
       await updateProfile(res.user, {
         displayName: form.displayName,
       });
       setSuccess("Registration Successful. proceed to login", res.user);
+      setError((prevError) =>{
+        prevError.style.display = "none";
+      })
     } catch (error) {
+      
       console.error("Error during registration", error);
       setError("An error occurred during registration");
     }
@@ -72,7 +76,7 @@ export default function Register() {
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
 
-        <p>[]
+        <p>
           Already have an account? <Link to="/">Login here</Link>
         </p>
       </div>
