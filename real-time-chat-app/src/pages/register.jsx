@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '../firebase';
-import { Link } from 'react-router-dom';
-//import { useHistory } from 'react-router-dom';
+import { auth, db } from '../firebase';
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function Register() {
-  const [form, setForm] = useState({ email: "", password: "", displayName: "" });
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    displayName: "",
+  });
   const [error, setError] = useState("");
-  const[success, setSuccess] = useState("");
-  //const history = useHistory;
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const getDetails = (e) => {
     const { name, value } = e.target;
@@ -16,7 +20,8 @@ export default function Register() {
       ...prevForm,
       [name]: value,
     }));
-  };1
+  };
+  1;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,18 +31,22 @@ export default function Register() {
       return;
     }
 
-    try {    
-      const res = await createUserWithEmailAndPassword(auth, form.email, form.password);
-     // history.push('/chat')
-      await updateProfile(res.user, {
-        displayName: form.displayName,
+    try {
+      const userCredentials = await auth.createUserWithEmailAndPassword(
+        form.email,
+        form.password
+      );
+      const user = userCredentials.user;
+      navigate.push("/chat");
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        email: user.email
       });
       setSuccess("Registration Successful. proceed to login", res.user);
-      setError((prevError) =>{
+      setError((prevError) => {
         prevError.style.display = "none";
-      })
+      });
     } catch (error) {
-      
       console.error("Error during registration", error);
       setError("An error occurred during registration");
     }
@@ -73,8 +82,8 @@ export default function Register() {
           />
           <button type="submit">Register</button>
         </form>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {success && <p style={{ color: 'green' }}>{success}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {success && <p style={{ color: "green" }}>{success}</p>}
 
         <p>
           Already have an account? <Link to="/">Login here</Link>

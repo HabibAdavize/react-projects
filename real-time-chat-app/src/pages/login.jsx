@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth} from '../firebase';
 import { Link } from 'react-router-dom';
-//import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  //const history = useHistory
+  const navigate = useNavigate();
 
   const getDetails = (e) => {
     const { name, value } = e.target;
@@ -26,8 +25,8 @@ export default function Login() {
     }
 
     try {
-      const res = await signInWithEmailAndPassword(auth, form.email, form.password);
-      //history.push('/chat');
+      const res = await auth.signInWithEmailAndPassword(form.email, form.password);
+      navigate.push('/chat');
       console.log("User logged in:", res.user);
     } catch (error) {
       console.error("Error during login", error);
