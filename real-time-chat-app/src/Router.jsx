@@ -1,19 +1,23 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/login.jsx";
-import Register from "./pages/register.jsx";
-import Chat from "./pages/chat.jsx"
-//import Users from './components/Users';
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import ChatPage from './pages/ChatPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
-function AppRouter() {
+const AppRouter = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/chat" element={<Chat />} />
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
-}
+};
 
 export default AppRouter;
