@@ -5,7 +5,7 @@ import Navbar from '../components/navbar.jsx';
 
 const RegisterPage = () => {
   return (
-    <div>
+    <div >
       <Navbar />
       <Register />
     </div>

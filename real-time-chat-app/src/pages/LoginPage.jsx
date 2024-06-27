@@ -5,9 +5,9 @@ import Navbar from '../components/navbar.jsx';
 
 const LoginPage = () => {
   return (
-    <div>
+    <div >
       <Navbar />
-      <Login />
+      <Login/>
     </div>
   );
 };

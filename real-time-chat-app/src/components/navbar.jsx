@@ -13,8 +13,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav>
-      <h1>Chat App</h1>
+    <div className="nav-wrapper">
+      <h1>React Chat System</h1>
+      <nav>
       {currentUser ? (
         <button onClick={handleLogout}>Logout</button>
       ) : (
@@ -24,6 +25,7 @@ const Navbar = () => {
         </>
       )}
     </nav>
+    </div>
   );
 };
 
