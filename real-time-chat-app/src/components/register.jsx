@@ -59,6 +59,7 @@ const Register = () => {
           placeholder="Password"
           required
         />
+        <span>Upload Profile:</span>
         <input
           type="file"
           onChange={handleFileChange}

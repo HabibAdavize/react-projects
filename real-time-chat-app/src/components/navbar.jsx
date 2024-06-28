@@ -19,10 +19,10 @@ const Navbar = () => {
       {currentUser ? (
         <button onClick={handleLogout}>Logout</button>
       ) : (
-        <>
-          <Link to="/">Login</Link>
-          <Link to="/register">Register</Link>
-        </>
+        <div className='btn-wrapper'>
+          <Link to="/"><button data-aos="fade-right"  className='btn'>Login</button></Link>
+          <Link to="/register"><button data-aos="fade-left"  className='btn'>Register</button></Link>
+        </div>
       )}
     </nav>
     </div>
