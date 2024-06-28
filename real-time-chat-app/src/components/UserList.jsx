@@ -19,7 +19,7 @@ const UserList = ({ onSelectUser }) => {
   }, []);
 
   const filteredUsers = users.filter(user => 
-    user.email !== currentUser.email && 
+    user.email !== currentUser?.email && 
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
