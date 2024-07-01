@@ -7,6 +7,7 @@ import { auth, db, storage } from '../firebase';
 import { addDoc, collection } from 'firebase/firestore';
 
 const Register = () => {
+  const [userName, setUserName] = useState('')
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
@@ -31,6 +32,7 @@ const Register = () => {
 
       await addDoc(collection(db, 'users'), {
         uid: user.uid,
+        userName: userName,
         email: user.email,
         profilePicture: profilePictureURL,
       });
@@ -45,6 +47,13 @@ const Register = () => {
     <div data-aos="fade-left" className="auth-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="Username"
+          required
+        />
         <input
           type="email"
           value={email}
