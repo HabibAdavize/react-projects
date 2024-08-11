@@ -4,7 +4,7 @@ import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, getDocs }
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 
-const firebaseConfig = {  
+const firebaseConfig = {
   apiKey: "AIzaSyDEmyu7w3BjTGBtX-wqry5xvdngBXPbJmE",
   authDomain: "react-chat-app-c8e77.firebaseapp.com",
   projectId: "react-chat-app-c8e77",
