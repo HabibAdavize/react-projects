@@ -20,8 +20,8 @@ const Navbar = () => {
         <button onClick={handleLogout}>Logout</button>
       ) : (
         <div className='btn-wrapper'>
-          <Link to="/"><button data-aos="fade-right" data-aos-once="true"  className='btn'>Login</button></Link>
-          <Link to="/register"><button data-aos="fade-left" data-aos-once="true"  className='btn'>Register</button></Link>
+          <Link to="/"><button className='btn'>Login</button></Link>
+          <Link to="/register"><button className='btn'>Register</button></Link>
         </div>
       )}
     </nav>
