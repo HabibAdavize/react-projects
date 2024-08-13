@@ -47,7 +47,7 @@ nav {
     gap: 5rem;
   }
   .btn {
-    background-color: transparent; /* Green */
+    background-color: transparent;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -80,26 +80,26 @@ nav {
     input {
       margin-bottom: 1rem;
       padding: 0.5rem;
-      border: 1px solid #E0E0E0;
+      border: 1px solid #e0e0e0;
       border-radius: 2px;
       outline: none;
       font-family: Arial, sans-serif;
     }
-    .passinput-container{
+    .passinput-container {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
       margin-left: 0;
       margin-bottom: 0.5rem;
-      background-color: #E0E0E0;
+      background-color: #e0e0e0;
     }
-    .passinput-container input{
+    .passinput-container input {
       margin-bottom: 0;
     }
 
     button {
-      width:50%;
+      width: 50%;
       padding: 0.5rem;
       border: none;
       border-radius: 4px;
@@ -125,6 +125,8 @@ nav {
   flex: 1;
   padding: 20px;
   border: 1px solid #333333;
+  width: auto;
+  height: auto;
 }
 
 .chat-box {
@@ -169,7 +171,7 @@ nav {
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   border-radius: 5px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   width: auto;
   max-width: 80%;
   height: auto;
@@ -205,8 +207,10 @@ nav {
 
 .message-input {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   border-top: 1px solid #333333;
-  padding-top: 1rem;
+  padding: 1rem;
 
   input {
     flex: 1;
@@ -214,6 +218,7 @@ nav {
     border: 1px solid #333333;
     border-radius: 4px;
     margin-right: 0.5rem;
+    margin-bottom: 0;
   }
 
   button {
@@ -230,10 +235,21 @@ nav {
   width: 300px;
   border: 1px solid #333333;
   padding: 20px;
-  margin-right: 1rem;
   display: flex;
   flex-direction: column;
   height: 400px;
+}
+
+.user-list.hidden {
+  display: none;
+}
+
+.user-list.visible {
+  display: block;
+}
+
+.user-list-toggle {
+  display: none;
 }
 
 h2 {
@@ -244,7 +260,7 @@ input {
   width: 100%;
   padding: 0.5rem;
   border: none;
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
   border-radius: 4px;
   margin-bottom: 1rem;
 }
@@ -277,5 +293,85 @@ li {
 
   span {
     font-size: 1rem;
+  }
+}
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  /* Styles for tablets like iPads */
+  .chat-container {
+    width: 800px;
+    padding: 0;
+  }
+  .chat-content {
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    height: 100%;
+    padding: 10px;
+  }
+  .user-list {
+    width: 100%;
+    padding: 5px;
+    align-items: center;
+  }
+  .user-list input{
+    padding: 0.5rem;
+    width: auto;
+  }
+  .user-list ul{
+    width: 100%;
+  }
+  .user-list-toggle {
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .user-list.visible {
+    display: flex;
+  }
+  .chat-box {
+    width: 100%;
+    height: 850px;
+    padding: 0;
+  }
+}
+@media only screen and (max-width: 767px) {
+  /* Styles for mobile phones */
+  .chat-container {
+    padding: 0rem;
+  }
+  .chat-content {
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    padding: 10px;
+  }
+  .user-list {
+    width: 100%;
+    padding: 5px;
+    align-items: center;
+  }
+  .user-list input{
+    padding: 0.5rem;
+    width: auto;
+  }
+  .user-list ul{
+    width: 100%;
+  }
+  .user-list-toggle {
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .user-list {
+    display: none;
+  }
+
+  .user-list.visible {
+    display: flex;
+  }
+  .chat-box {
+    width: 100%;
+    height: 600px;
+    padding: 0;
   }
 }
