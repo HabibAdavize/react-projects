@@ -4,6 +4,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "../firebase";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import Lottie from "lottie-react";
+import Alert from "../assets/animations/alertCircle.json";
 import Preloader from "../components/Preloader";
 
 const Register = () => {
@@ -84,7 +86,19 @@ const Register = () => {
         <>
           <h2>Register</h2>
           <form onSubmit={handleSubmit}>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && (
+              <p
+                style={{ color: "red", display: "flex", alignItems: "center" }}
+              >
+                {error}
+                <Lottie
+                  animationData={Alert}
+                  loop={true}
+                  autoplay={true}
+                  style={{ width: 24, height: 24 }}
+                />
+              </p>
+            )}
             <input
               type="text"
               value={userName}

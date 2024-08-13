@@ -12,6 +12,8 @@ import {
 import { db } from "../firebase";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Lottie from 'lottie-react';
+import Chat from "../assets/animations/chat.json";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -122,6 +124,12 @@ const UserList = () => {
                   <li key={index}>{message.content}</li>
                 ))}
             </ul>
+            <Lottie
+                  animationData={Chat}
+                  loop={true}
+                  autoplay={true} // Adjust animation based on showPassword state
+                  style={{ width: 24, height: 24 }}
+                />
           </li>
         ))}
       </ul>
