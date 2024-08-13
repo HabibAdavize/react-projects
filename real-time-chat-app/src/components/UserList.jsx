@@ -26,10 +26,13 @@ const UserList = () => {
   useEffect(() => {
     // Set up real-time listener for users
     const unsubscribeUsers = onSnapshot(collection(db, "users"), (snapshot) => {
-      const usersData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const usersData = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter((user) => user.id !== currentUser?.uid);
+
       setUsers(usersData);
 
       // Fetch messages for each user
@@ -53,7 +56,10 @@ const UserList = () => {
             );
             const messagesSnapshot = await getDocs(messagesQuery);
             userMessages.push(
-              ...messagesSnapshot.docs.map((doc) => doc.data())
+              ...messagesSnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                chatId,
+              }))
             );
           }
 
@@ -66,7 +72,7 @@ const UserList = () => {
     });
 
     return () => unsubscribeUsers(); // Cleanup listener on component unmount
-  }, []);
+  }, [currentUser?.uid]);
 
   const startPrivateChat = async (user1, user2) => {
     try {
@@ -103,22 +109,30 @@ const UserList = () => {
   const toggleUserList = () => {
     setIsUserListVisible(!isUserListVisible);
   };
-  
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.userName !== currentUser?.userName &&
+  const filteredUsers = users
+    .filter((user) =>
       user.userName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    )
+    .sort((a, b) => {
+      const aNewMessages = messages[a.id]?.some(
+        (msg) => msg.senderId !== currentUser.uid && msg.read === false
+      );
+      const bNewMessages = messages[b.id]?.some(
+        (msg) => msg.senderId !== currentUser.uid && msg.read === false
+      );
+      return aNewMessages === bNewMessages
+        ? 0
+        : aNewMessages
+        ? -1
+        : 1;
+    });
 
   return (
     <>
-
-    <div className="user-list-toggle">
-      <button onClick={toggleUserList}>
-        ===
-      </button>
-    </div>
+      <div className="user-list-toggle">
+        <button onClick={toggleUserList}>===</button>
+      </div>
       <div className={`user-list ${isUserListVisible ? "visible" : "hidden"}`}>
         <h2>Users</h2>
         <input
@@ -128,30 +142,83 @@ const UserList = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <ul>
-          {filteredUsers.map((user) => (
-            <li
-              key={user.id}
-              onClick={() => startPrivateChat(currentUser, user)}
-            >
-              <img
-                src={user.profilePicture}
-                alt={`${user.userName}'s profile`}
-              />
-              <span>{user.userName}</span>
-              <ul>
-                {messages[user.id] &&
-                  messages[user.id].map((message, index) => (
-                    <li key={index}>{message.content}</li>
-                  ))}
-              </ul>
-              <Lottie
-                animationData={Chat}
-                loop={true}
-                autoplay={true} // Adjust animation based on showPassword state
-                style={{ width: 24, height: 24 }}
-              />
-            </li>
-          ))}
+          {filteredUsers.length === 0 ? (
+            <li>User not found</li>
+          ) : (
+            filteredUsers.map((user) => (
+              <li
+                key={user.id}
+                onClick={() => startPrivateChat(currentUser, user)}
+              >
+                <img
+                  src={user.profilePicture}
+                  alt={`${user.userName}'s profile`}
+                />
+                <span>
+                  {user.id === currentUser.uid ? "Me" : user.userName}
+                </span>
+                {messages[user.id]?.some(
+                  (msg) => msg.senderId !== currentUser.uid && msg.read === false
+                ) && <span className="new-message-indicator">New</span>}
+                <ul>
+                  {messages[user.id] &&
+                    messages[user.id].map((message, index) => (
+                      <li key={index}>{message.content}</li>
+                    ))}
+                </ul>
+                <Lottie
+                  animationData={Chat}
+                  loop={true}
+                  autoplay={true}
+                  style={{ width: 24, height: 24 }}
+                />
+              </li>
+            ))
+          )}
+        </ul>
+      </div>
+      <div className="user-list desk">
+        <h2>Users</h2>
+        <input
+          type="text"
+          placeholder="Search users"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <ul>
+          {filteredUsers.length === 0 ? (
+            <li>User not found</li>
+          ) : (
+            filteredUsers.map((user) => (
+              <li
+                key={user.id}
+                onClick={() => startPrivateChat(currentUser, user)}
+              >
+                <img
+                  src={user.profilePicture}
+                  alt={`${user.userName}'s profile`}
+                />
+                <span>
+                  {user.id === currentUser.uid ? "Me" : user.userName}
+                </span>
+                {messages[user.id]?.some(
+                  (msg) => msg.senderId !== currentUser.uid && msg.read === false
+                ) && <span className="new-message-indicator">New</span>}
+                <ul>
+                  {messages[user.id] &&
+                    messages[user.id].map((message, index) => (
+                      <li key={index}>{message.content}</li>
+                    ))}
+                </ul>
+                <Lottie
+                  animationData={Chat}
+                  loop={true}
+                  autoplay={true}
+                  style={{ width: 24, height: 24 }}
+                />
+              </li>
+            ))
+          )}
         </ul>
       </div>
     </>

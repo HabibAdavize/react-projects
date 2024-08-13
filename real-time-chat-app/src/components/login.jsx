@@ -5,7 +5,7 @@ import { auth } from "../firebase";
 import Lottie from "lottie-react";
 import Preloader from "../components/Preloader";
 import Visibility from "../assets/animations/visibility.json";
-import Alert from "../assets/animations/alertCircle.json"
+import Alert from "../assets/animations/alertCircle.json";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,7 +26,7 @@ const Login = () => {
       // Use a timeout to simulate loading transition
       setTimeout(() => {
         navigate("/chat");
-      }, 1000);
+      }, 2000);
     } catch (error) {
       console.error("Error logging in:", error);
       setError("Failed to log in. Please check your credentials.");
@@ -40,13 +40,27 @@ const Login = () => {
   return (
     <div data-aos="fade-right" className="auth-container">
       {loading ? (
-        <Preloader />
+        <>
+          <div class="banter-loader">
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+          </div>
+        </>
       ) : (
         <>
           <h2>Login</h2>
           <form onSubmit={handleSubmit}>
             {error && (
-              <p style={{ color: "red", display: "flex", alignItems:"center", }}>
+              <p
+                style={{ color: "red", display: "flex", alignItems: "center" }}
+              >
                 {error}
                 <Lottie
                   animationData={Alert}
@@ -75,16 +89,12 @@ const Login = () => {
                 onClick={togglePasswordVisibility}
                 className="visibility-icon"
               >
-                <Lottie
-                  animationData={Visibility}
-                  loop={showPassword ? true : false}
-                  autoplay={false}
-                  direction={showPassword ? 1 : -1} // Adjust animation based on showPassword state
-                  style={{ width: 24, height: 24 }}
-                />
+                <Lottie animationData={Visibility} />
               </div>
             </div>
-            <button type="submit">Login</button>
+            <span className="btn-span">
+              <button type="submit">Login</button>
+            </span>
           </form>
         </>
       )}

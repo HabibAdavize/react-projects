@@ -122,9 +122,11 @@ const Register = () => {
             />
             <span>Upload Profile Picture:</span>
             <input type="file" onChange={handleFileChange} accept="image/*" />
-            <button type="submit" disabled={loading}>
-              {loading ? "Registering..." : "Register"}
-            </button>
+            <span className="btn-span">
+              <button type="submit" disabled={loading}>
+                {loading ? "Registering..." : "Register"}
+              </button>
+            </span>
           </form>
         </>
       )}
