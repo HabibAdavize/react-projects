@@ -1,19 +1,20 @@
+// pages/ChatPage.jsx
 import React, { useEffect, useState } from "react";
 import {
   collection,
-  getDocs,
-  addDoc,
   query,
   orderBy,
   serverTimestamp,
   onSnapshot,
   doc,
+  addDoc,
   getDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/navbar";
 import UserList from "../components/UserList";
+import Preloader from "../components/Preloader";
 import { useParams } from "react-router-dom";
 
 const ChatPage = () => {
@@ -22,10 +23,13 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const [chatUser, setChatUser] = useState(null); // State to store the user data
   const { currentUser } = useAuth();
+  const [loadingMessages, setLoadingMessages] = useState(false); // State to handle loading messages
 
   useEffect(() => {
     const fetchMessages = async () => {
       if (currentUser && chatId) {
+        setLoadingMessages(true); // Set loading to true before fetching data
+
         try {
           const messagesQuery = query(
             collection(db, `chats/${chatId}/messages`),
@@ -37,6 +41,7 @@ const ChatPage = () => {
               ...doc.data(),
             }));
             setMessages(messagesData);
+            setLoadingMessages(false); // Set loading to false when data is fetched
           });
 
           // Fetch the other user's data
@@ -51,11 +56,12 @@ const ChatPage = () => {
             }
           };
 
-          fetchChatUser();
+          await fetchChatUser();
 
           return () => unsubscribe();
         } catch (error) {
           console.error("Error fetching messages:", error);
+          setLoadingMessages(false); // Ensure loading is turned off on error
         }
       }
     };
@@ -84,42 +90,48 @@ const ChatPage = () => {
     <div className="chat-container">
       <Navbar />
       <div className="chat-content">
-        <UserList onSelectUser={(chatId) => {}} /> {/* Optional: handle UI changes on user selection */}
+        <UserList onSelectUser={() => setLoadingMessages(true)} /> {/* Set loading to true on user selection */}
         <div className="chat-box">
-          {/* Profile Section */}
-          {chatUser && (
-            <div className="profile-header">
-              <img src={chatUser.profilePicture} alt="Profile" className="profile-picture-large" />
-              <span className="profile-name">{chatUser.userName}</span>
-            </div>
-          )}
-
-          <ul className="messages">
-            {messages.map((message) => (
-              <li
-                key={message.id}
-                className={`message ${
-                  message.senderId === currentUser.uid ? "current-user" : ""
-                }`}
-              >
-                <div className="message-header">
-                  <span className="sender-name">{message.senderName}</span>
-                  <span className="timestamp">{new Date(message.timestamp?.toDate()).toLocaleTimeString()}</span>
+          {loadingMessages ? (
+            <Preloader />
+          ) : (
+            <>
+              {/* Profile Section */}
+              {chatUser && (
+                <div className="profile-header">
+                  <img src={chatUser.profilePicture} alt="Profile" className="profile-picture-large" />
+                  <span className="profile-name">{chatUser.userName}</span>
                 </div>
-                <div className="message-content">{message.content}</div>
-              </li>
-            ))}
-          </ul>
-          <div className="message-input">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
-              required
-            />
-            <button onClick={handleSendMessage}>Send</button>
-          </div>
+              )}
+
+              <ul className="messages">
+                {messages.map((message) => (
+                  <li
+                    key={message.id}
+                    className={`message ${
+                      message.senderId === currentUser.uid ? "current-user" : ""
+                    }`}
+                  >
+                    <div className="message-header">
+                      <span className="sender-name">{message.senderName}</span>
+                      <span className="timestamp">{new Date(message.timestamp?.toDate()).toLocaleTimeString()}</span>
+                    </div>
+                    <div className="message-content">{message.content}</div>
+                  </li>
+                ))}
+              </ul>
+              <div className="message-input">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  required
+                />
+                <button onClick={handleSendMessage}>Send</button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
