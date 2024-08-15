@@ -14,6 +14,7 @@ import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/navbar";
 import UserList from "../components/UserList";
 import Preloader from "../components/Preloader";
+import DisplayProfile from "../components/displayProfile";
 import { useParams } from "react-router-dom";
 
 const ChatPage = () => {
@@ -90,8 +91,13 @@ const ChatPage = () => {
     fetchMessages();
   }, [chatId, currentUser]);
 
+  useEffect(() => {
+    const chatBox = document.querySelector(".messages");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, [messages]);
+
   const handleSendMessage = async () => {
-    if (newMessage.trim() && chatId) {
+    if (newMessage.trim()) {
       try {
         await addDoc(collection(db, `chats/${chatId}/messages`), {
           senderId: currentUser.uid,
@@ -107,27 +113,21 @@ const ChatPage = () => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSendMessage();
+    }
+  };
+
   return (
     <div className="chat-container">
+      <DisplayProfile />
       <Navbar onToggleTheme={toggleTheme} isDarkMode={isDarkMode} />
       <div className="chat-content">
-        <UserList onSelectUser={() => setLoadingMessages(true)} />{" "}
-        {/* Set loading to true on user selection */}
+        <UserList onSelectUser={() => setLoadingMessages(true)} />
         <div className="chat-box">
           {loadingMessages ? (
-            <>
-              <div class="banter-loader">
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-                <div class="banter-loader__box"></div>
-              </div>
-            </>
+            <Preloader />
           ) : (
             <>
               {/* Profile Section */}
@@ -160,11 +160,8 @@ const ChatPage = () => {
                     }`}
                   >
                     <div className="message-header">
-                      <span className="sender-name">{message.senderName}</span>
                       <span className="timestamp">
-                        {new Date(
-                          message.timestamp?.toDate()
-                        ).toLocaleTimeString()}
+                        {new Date(message.timestamp?.toDate()).toLocaleString()}
                       </span>
                     </div>
                     <div className="message-content">{message.content}</div>
@@ -176,27 +173,28 @@ const ChatPage = () => {
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   placeholder="Type your message..."
                   required
                 />
                 <button onClick={handleSendMessage}>
-                  <div class="svg-wrapper-1">
-                    <div class="svg-wrapper">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        width="24"
-                        height="24"
-                      >
-                        <path fill="none" d="M0 0h24v24H0z"></path>
-                        <path
-                          fill="currentColor"
-                          d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
-                        ></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <span>Send</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 664 663"
+                  >
+                    <path
+                      fill="none"
+                      d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                    ></path>
+                    <path
+                      stroke-linejoin="round"
+                      stroke-linecap="round"
+                      stroke-width="33.67"
+                      stroke="#6c6c6c"
+                      d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                    ></path>
+                  </svg>
                 </button>
               </div>
             </>

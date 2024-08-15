@@ -31,10 +31,10 @@ const UserList = () => {
           id: doc.id,
           ...doc.data(),
         }))
-        .filter((user) => user.id !== currentUser?.uid);
+        .filter((user) => user.id !== currentUser?.uid); // Filter out the logged-in user
 
       setUsers(usersData);
-
+        console.log(users)
       // Fetch messages for each user
       const fetchMessagesForUsers = async () => {
         const messagesData = {};
@@ -112,7 +112,7 @@ const UserList = () => {
 
   const filteredUsers = users
     .filter((user) =>
-      user.userName.toLowerCase().includes(searchTerm.toLowerCase())
+      user.userName ? user.userName.toLowerCase().includes(searchTerm.toLowerCase()) : false
     )
     .sort((a, b) => {
       const aNewMessages = messages[a.id]?.some(
@@ -121,17 +121,18 @@ const UserList = () => {
       const bNewMessages = messages[b.id]?.some(
         (msg) => msg.senderId !== currentUser.uid && msg.read === false
       );
-      return aNewMessages === bNewMessages
-        ? 0
-        : aNewMessages
-        ? -1
-        : 1;
+      return aNewMessages === bNewMessages ? 0 : aNewMessages ? -1 : 1;
     });
 
   return (
     <>
       <div className="user-list-toggle">
-        <button onClick={toggleUserList}>===</button>
+        <input type="checkbox" id="checkbox" onChange={toggleUserList} />
+        <label htmlFor="checkbox" className="toggle">
+          <div className="bar bar--top"></div>
+          <div className="bar bar--middle"></div>
+          <div className="bar bar--bottom"></div>
+        </label>
       </div>
       <div className={`user-list ${isUserListVisible ? "visible" : "hidden"}`}>
         <h2>Users</h2>
@@ -154,11 +155,10 @@ const UserList = () => {
                   src={user.profilePicture}
                   alt={`${user.userName}'s profile`}
                 />
-                <span>
-                  {user.id === currentUser.uid ? "Me" : user.userName}
-                </span>
+                <span>{user.userName}</span>
                 {messages[user.id]?.some(
-                  (msg) => msg.senderId !== currentUser.uid && msg.read === false
+                  (msg) =>
+                    msg.senderId !== currentUser.uid && msg.read === false
                 ) && <span className="new-message-indicator">New</span>}
                 <ul>
                   {messages[user.id] &&
@@ -198,18 +198,7 @@ const UserList = () => {
                   src={user.profilePicture}
                   alt={`${user.userName}'s profile`}
                 />
-                <span>
-                  {user.id === currentUser.uid ? "Me" : user.userName}
-                </span>
-                {messages[user.id]?.some(
-                  (msg) => msg.senderId !== currentUser.uid && msg.read === false
-                ) && <span className="new-message-indicator">New</span>}
-                <ul>
-                  {messages[user.id] &&
-                    messages[user.id].map((message, index) => (
-                      <li key={index}>{message.content}</li>
-                    ))}
-                </ul>
+                <span>{user.userName}</span>
                 <Lottie
                   animationData={Chat}
                   loop={true}

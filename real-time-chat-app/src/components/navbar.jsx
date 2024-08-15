@@ -11,7 +11,7 @@ const Navbar = ({ onToggleTheme, isDarkMode }) => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/"); // Navigate to the home page after logout
+      navigate("/"); 
     } catch (error) {
       console.error("Error during sign out:", error);
     }
@@ -24,11 +24,23 @@ const Navbar = ({ onToggleTheme, isDarkMode }) => {
         {currentUser ? (
           <>
             <button onClick={handleLogout}>Logout</button>
-            <div className="btn-wrapper">
-              <button onClick={onToggleTheme} className="btn">
-                {isDarkMode ? "Light Mode" : "Dark Mode"}
-              </button>
-            </div>
+            
+            <label className="switch">
+              <input type="checkbox" checked={isDarkMode} onChange={onToggleTheme} />
+              <span className="slider">
+                <span className="circle">
+                  <span className="shine shine-1"></span>
+                  <span className="shine shine-2"></span>
+                  <span className="shine shine-3"></span>
+                  <span className="shine shine-4"></span>
+                  <span className="shine shine-5"></span>
+                  <span className="shine shine-6"></span>
+                  <span className="shine shine-7"></span>
+                  <span className="shine shine-8"></span>
+                  <span className="moon"></span>
+                </span>
+              </span>
+            </label>
           </>
         ) : (
           <div className="btn-wrapper">

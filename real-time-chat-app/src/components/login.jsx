@@ -41,17 +41,7 @@ const Login = () => {
     <div data-aos="fade-right" className="auth-container">
       {loading ? (
         <>
-          <div class="banter-loader">
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-          </div>
+          <Preloader />
         </>
       ) : (
         <>

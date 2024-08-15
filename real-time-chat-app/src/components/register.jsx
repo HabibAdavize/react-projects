@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "../firebase";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import Lottie from "lottie-react";
 import Alert from "../assets/animations/alertCircle.json";
 import Preloader from "../components/Preloader";
@@ -27,16 +27,6 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // Check if the username is already taken
-      //const usersQuery = query(collection(db, 'users'), where('userName', '==', userName));
-      //const usersSnapshot = await getDocs(usersQuery);
-
-      //if (!usersSnapshot.empty) {
-      //setError('Username is already taken.');
-      //setLoading(false);
-      //return;
-      //}
-
       // Validate input fields
       if (!userName || !email || !password) {
         setError("Please fill out all fields.");
@@ -60,12 +50,18 @@ const Register = () => {
         profilePictureURL = await getDownloadURL(profilePictureRef);
       }
 
+      // Update the user's profile in Firebase Authentication
+      await updateProfile(user, {
+        displayName: userName,
+        photoURL: profilePictureURL,
+      });
+
       // Add user to Firestore
       await addDoc(collection(db, "users"), {
         uid: user.uid,
-        userName: userName,
+        userName: userName, // Store the username
         email: user.email,
-        profilePicture: profilePictureURL,
+        profilePicture: profilePictureURL, // Store the profile picture URL
       });
 
       setTimeout(() => {
