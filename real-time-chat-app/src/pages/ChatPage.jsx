@@ -14,7 +14,6 @@ import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/navbar";
 import UserList from "../components/UserList";
 import Preloader from "../components/Preloader";
-import DisplayProfile from "../components/displayProfile";
 import { useParams } from "react-router-dom";
 
 const ChatPage = () => {
@@ -93,7 +92,9 @@ const ChatPage = () => {
 
   useEffect(() => {
     const chatBox = document.querySelector(".messages");
-    chatBox.scrollTop = chatBox.scrollHeight;
+    if (chatBox) {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
   }, [messages]);
 
   const handleSendMessage = async () => {
@@ -121,83 +122,81 @@ const ChatPage = () => {
 
   return (
     <div className="chat-container">
-      <DisplayProfile />
       <Navbar onToggleTheme={toggleTheme} isDarkMode={isDarkMode} />
       <div className="chat-content">
         <UserList onSelectUser={() => setLoadingMessages(true)} />
         <div className="chat-box">
-          {loadingMessages ? (
-            <Preloader />
-          ) : (
-            <>
-              {/* Profile Section */}
-              {chatUser && (
-                <div className="profile-header">
-                  <img
-                    src={chatUser.profilePicture}
-                    alt="Profile"
-                    className="profile-picture-large"
+          {chatId ? (
+            loadingMessages ? (
+              <Preloader />
+            ) : (
+              <>
+                {conversationStartDate && (
+                  <div className="conversation-start-date">
+                    Conversation started on{" "}
+                    {new Date(
+                      conversationStartDate.toDate()
+                    ).toLocaleDateString()}
+                  </div>
+                )}
+
+                <ul className="messages">
+                  {messages.map((message) => (
+                    <li
+                      key={message.id}
+                      className={`message ${
+                        message.senderId === currentUser.uid
+                          ? "current-user"
+                          : ""
+                      }`}
+                    >
+                      <div className="message-header">
+                        <span className="timestamp">
+                          {new Date(
+                            message.timestamp?.toDate()
+                          ).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="message-content">{message.content}</div>
+                    </li>
+                  ))}
+                </ul>
+                <div className="message-input">
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Type your message..."
+                    required
                   />
-                  <span className="profile-name">{chatUser.userName}</span>
-                </div>
-              )}
-
-              {conversationStartDate && (
-                <div className="conversation-start-date">
-                  Conversation started on{" "}
-                  {new Date(
-                    conversationStartDate.toDate()
-                  ).toLocaleDateString()}
-                </div>
-              )}
-
-              <ul className="messages">
-                {messages.map((message) => (
-                  <li
-                    key={message.id}
-                    className={`message ${
-                      message.senderId === currentUser.uid ? "current-user" : ""
-                    }`}
-                  >
-                    <div className="message-header">
-                      <span className="timestamp">
-                        {new Date(message.timestamp?.toDate()).toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="message-content">{message.content}</div>
-                  </li>
-                ))}
-              </ul>
-              <div className="message-input">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type your message..."
-                  required
-                />
-                <button onClick={handleSendMessage}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 664 663"
-                  >
-                    <path
+                  <button onClick={handleSendMessage}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                    ></path>
-                    <path
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                      stroke-width="33.67"
-                      stroke="#6c6c6c"
-                      d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-            </>
+                      viewBox="0 0 664 663"
+                    >
+                      <path
+                        fill="none"
+                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                      ></path>
+                      <path
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="33.67"
+                        stroke="#6c6c6c"
+                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </>
+            )
+          ) : (
+            <div className="welcome-message">
+              <h2>Welcome, {currentUser?.displayName || "User"}!</h2>
+              <p>Please select a chat to start messaging.</p>
+            </div>
           )}
         </div>
       </div>

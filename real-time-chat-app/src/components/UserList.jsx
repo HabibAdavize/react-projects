@@ -24,30 +24,26 @@ const UserList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up real-time listener for users
+    // Real-time listener for users
     const unsubscribeUsers = onSnapshot(collection(db, "users"), (snapshot) => {
       const usersData = snapshot.docs
         .map((doc) => ({
-          id: doc.id,
+          uid: doc.id, // Ensure the uid is set properly
           ...doc.data(),
         }))
-        .filter((user) => user.id !== currentUser?.uid); // Filter out the logged-in user
+        .filter((user) => user.uid !== currentUser?.uid);
+      // Filter out the logged-in user
 
       setUsers(usersData);
-        console.log(users)
-      // Fetch messages for each user
-      const fetchMessagesForUsers = async () => {
-        const messagesData = {};
-        for (const user of usersData) {
-          const chatsQuery = query(
-            collection(db, "chats"),
-            where("participants", "array-contains", user.id)
-          );
+    });
 
-          const chatSnapshot = await getDocs(chatsQuery);
-          const userMessages = [];
-
-          for (const chatDoc of chatSnapshot.docs) {
+    // Real-time listener for messages
+    const unsubscribeMessages = onSnapshot(
+      collection(db, "chats"),
+      (snapshot) => {
+        const fetchMessagesForChats = async () => {
+          const messagesData = {};
+          for (const chatDoc of snapshot.docs) {
             const chatId = chatDoc.id;
             const messagesQuery = query(
               collection(db, `chats/${chatId}/messages`),
@@ -55,27 +51,44 @@ const UserList = () => {
               limit(5)
             );
             const messagesSnapshot = await getDocs(messagesQuery);
-            userMessages.push(
-              ...messagesSnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                chatId,
-              }))
-            );
+            const chatMessages = messagesSnapshot.docs.map((doc) => ({
+              ...doc.data(),
+              chatId,
+            }));
+
+            chatDoc.data().participants.forEach((participantId) => {
+              if (!messagesData[participantId]) {
+                messagesData[participantId] = [];
+              }
+              messagesData[participantId].push(...chatMessages);
+            });
           }
+          setMessages(messagesData);
+        };
 
-          messagesData[user.id] = userMessages;
-        }
-        setMessages(messagesData);
-      };
+        fetchMessagesForChats();
+      }
+    );
 
-      fetchMessagesForUsers();
-    });
-
-    return () => unsubscribeUsers(); // Cleanup listener on component unmount
+    return () => {
+      unsubscribeUsers();
+      unsubscribeMessages();
+    };
   }, [currentUser?.uid]);
 
+  if (!currentUser) {
+    return <div>Loading...</div>;
+  }
+  
+
   const startPrivateChat = async (user1, user2) => {
+    console.log("Starting chat between:", user1, user2);
     try {
+      // Ensure user1.uid and user2.uid are defined and not empty
+      if (!user1.uid || !user2.uid) {
+        throw new Error("User IDs are undefined or empty");
+      }
+
       const chatQuery = query(
         collection(db, "chats"),
         where("participants", "array-contains", user1.uid)
@@ -102,7 +115,6 @@ const UserList = () => {
       setIsUserListVisible(false);
     } catch (error) {
       console.error("Error starting private chat:", error);
-      // Display an error message to the user or log the error in a more robust way
     }
   };
 
@@ -112,7 +124,9 @@ const UserList = () => {
 
   const filteredUsers = users
     .filter((user) =>
-      user.userName ? user.userName.toLowerCase().includes(searchTerm.toLowerCase()) : false
+      user.userName
+        ? user.userName.toLowerCase().includes(searchTerm.toLowerCase())
+        : false
     )
     .sort((a, b) => {
       const aNewMessages = messages[a.id]?.some(
@@ -199,6 +213,16 @@ const UserList = () => {
                   alt={`${user.userName}'s profile`}
                 />
                 <span>{user.userName}</span>
+                {messages[user.id]?.some(
+                  (msg) =>
+                    msg.senderId !== currentUser.uid && msg.read === false
+                ) && <span className="new-message-indicator">New</span>}
+                <ul>
+                  {messages[user.id] &&
+                    messages[user.id].map((message, index) => (
+                      <li key={index}>{message.content}</li>
+                    ))}
+                </ul>
                 <Lottie
                   animationData={Chat}
                   loop={true}

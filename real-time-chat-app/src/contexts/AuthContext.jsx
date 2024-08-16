@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -7,9 +7,10 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const authInstance = getAuth(); // Initialize auth instance
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(authInstance, async (user) => {
       if (user) {
         // Fetch additional user data from Firestore
         const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -24,10 +25,10 @@ export const AuthProvider = ({ children }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [authInstance]);
 
   return (
-    <AuthContext.Provider value={{ currentUser }}>
+    <AuthContext.Provider value={{ currentUser, auth: authInstance }}>
       {children}
     </AuthContext.Provider>
   );

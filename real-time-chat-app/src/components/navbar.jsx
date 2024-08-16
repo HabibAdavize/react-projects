@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { Link, useNavigate } from "react-router-dom";
+import DisplayProfile from "../components/displayProfile";
 
 const Navbar = ({ onToggleTheme, isDarkMode }) => {
   const { currentUser } = useAuth();
@@ -19,10 +20,11 @@ const Navbar = ({ onToggleTheme, isDarkMode }) => {
 
   return (
     <div className="nav-wrapper">
-      <h1>React Chat System</h1>
+      <h1>eX Connect</h1>
       <nav>
         {currentUser ? (
-          <>
+          <div className="and-wrapper">
+            <DisplayProfile />
             <button onClick={handleLogout}>Logout</button>
             
             <label className="switch">
@@ -41,7 +43,7 @@ const Navbar = ({ onToggleTheme, isDarkMode }) => {
                 </span>
               </span>
             </label>
-          </>
+          </div>
         ) : (
           <div className="btn-wrapper">
             <Link to="/">

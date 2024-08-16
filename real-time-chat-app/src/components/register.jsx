@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { auth, db, storage } from "../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import Lottie from "lottie-react";
 import Alert from "../assets/animations/alertCircle.json";
 import Preloader from "../components/Preloader";
@@ -19,6 +19,20 @@ const Register = () => {
 
   const handleFileChange = (e) => {
     setProfilePicture(e.target.files[0]);
+  };
+
+  const createUserProfile = async (user) => {
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      await setDoc(userDocRef, {
+        userName: user.displayName || "",
+        email: user.email,
+        profilePicture: user.photoURL || "",
+      });
+    } catch (error) {
+      console.error("Error creating user profile:", error);
+      throw new Error("Failed to create user profile.");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -56,13 +70,8 @@ const Register = () => {
         photoURL: profilePictureURL,
       });
 
-      // Add user to Firestore
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        userName: userName, // Store the username
-        email: user.email,
-        profilePicture: profilePictureURL, // Store the profile picture URL
-      });
+      // Create or update the user's profile in Firestore
+      await createUserProfile(user);
 
       setTimeout(() => {
         navigate("/chat");
@@ -70,6 +79,7 @@ const Register = () => {
     } catch (error) {
       console.error("Error registering:", error.message);
       setError("Error registering. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
