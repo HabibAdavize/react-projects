@@ -601,7 +601,7 @@ nav {
 }
 
 .user-list {
-  width: 300px;
+  width: 400px;
   padding: 20px;
   display: none;
   flex-direction: column;
@@ -668,6 +668,20 @@ li {
   span {
     font-size: 1rem;
   }
+  .msg-highlight{
+    display: flex;
+    align-items: center;
+    padding-top:10px ;
+    padding-bottom:0;
+    justify-content: center;
+  }
+
+  .msg-highlight li{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
 }
 @media only screen and (min-width: 768px) and (max-width: 1023px) {
   /* Styles for tablets like iPads */

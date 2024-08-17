@@ -24,49 +24,53 @@ const UserList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Real-time listener for users
     const unsubscribeUsers = onSnapshot(collection(db, "users"), (snapshot) => {
       const usersData = snapshot.docs
         .map((doc) => ({
-          uid: doc.id, // Ensure the uid is set properly
+          uid: doc.id,
           ...doc.data(),
         }))
         .filter((user) => user.uid !== currentUser?.uid);
-      // Filter out the logged-in user
 
       setUsers(usersData);
     });
 
-    // Real-time listener for messages
     const unsubscribeMessages = onSnapshot(
       collection(db, "chats"),
       (snapshot) => {
-        const fetchMessagesForChats = async () => {
-          const messagesData = {};
-          for (const chatDoc of snapshot.docs) {
-            const chatId = chatDoc.id;
+        const messagesData = {};
+        snapshot.docs.forEach((chatDoc) => {
+          const chatId = chatDoc.id;
+          const chatData = chatDoc.data();
+
+          // Check if the current user is a participant in the chat
+          if (chatData.participants.includes(currentUser.uid)) {
             const messagesQuery = query(
               collection(db, `chats/${chatId}/messages`),
               orderBy("timestamp", "desc"),
-              limit(5)
+              limit(1) // Limit to only the most recent message
             );
-            const messagesSnapshot = await getDocs(messagesQuery);
-            const chatMessages = messagesSnapshot.docs.map((doc) => ({
-              ...doc.data(),
-              chatId,
-            }));
 
-            chatDoc.data().participants.forEach((participantId) => {
-              if (!messagesData[participantId]) {
-                messagesData[participantId] = [];
-              }
-              messagesData[participantId].push(...chatMessages);
+            onSnapshot(messagesQuery, (messagesSnapshot) => {
+              const chatMessages = messagesSnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                chatId,
+              }));
+
+              chatData.participants.forEach((participantId) => {
+                // Only store messages for the current user
+                if (participantId === currentUser.uid) {
+                  messagesData[chatData.participants.find(uid => uid !== currentUser.uid)] = chatMessages;
+                }
+              });
+
+              setMessages((prevMessages) => ({
+                ...prevMessages,
+                ...messagesData,
+              }));
             });
           }
-          setMessages(messagesData);
-        };
-
-        fetchMessagesForChats();
+        });
       }
     );
 
@@ -79,12 +83,9 @@ const UserList = () => {
   if (!currentUser) {
     return <div>Loading...</div>;
   }
-  
 
   const startPrivateChat = async (user1, user2) => {
-    console.log("Starting chat between:", user1, user2);
     try {
-      // Ensure user1.uid and user2.uid are defined and not empty
       if (!user1.uid || !user2.uid) {
         throw new Error("User IDs are undefined or empty");
       }
@@ -122,6 +123,7 @@ const UserList = () => {
     setIsUserListVisible(!isUserListVisible);
   };
 
+  // Filter and sort users by the latest unread message first and the latest message timestamp
   const filteredUsers = users
     .filter((user) =>
       user.userName
@@ -129,13 +131,20 @@ const UserList = () => {
         : false
     )
     .sort((a, b) => {
-      const aNewMessages = messages[a.id]?.some(
+      const aLastMessage = messages[a.uid]?.[0]?.timestamp || 0;
+      const bLastMessage = messages[b.uid]?.[0]?.timestamp || 0;
+
+      const aHasUnread = messages[a.uid]?.some(
         (msg) => msg.senderId !== currentUser.uid && msg.read === false
       );
-      const bNewMessages = messages[b.id]?.some(
+      const bHasUnread = messages[b.uid]?.some(
         (msg) => msg.senderId !== currentUser.uid && msg.read === false
       );
-      return aNewMessages === bNewMessages ? 0 : aNewMessages ? -1 : 1;
+
+      if (aHasUnread && !bHasUnread) return -1;
+      if (!aHasUnread && bHasUnread) return 1;
+
+      return bLastMessage - aLastMessage;
     });
 
   return (
@@ -162,7 +171,7 @@ const UserList = () => {
           ) : (
             filteredUsers.map((user) => (
               <li
-                key={user.id}
+                key={user.uid}
                 onClick={() => startPrivateChat(currentUser, user)}
               >
                 <img
@@ -170,15 +179,25 @@ const UserList = () => {
                   alt={`${user.userName}'s profile`}
                 />
                 <span>{user.userName}</span>
-                {messages[user.id]?.some(
+                {messages[user.uid]?.some(
                   (msg) =>
                     msg.senderId !== currentUser.uid && msg.read === false
                 ) && <span className="new-message-indicator">New</span>}
-                <ul>
-                  {messages[user.id] &&
-                    messages[user.id].map((message, index) => (
-                      <li key={index}>{message.content}</li>
-                    ))}
+                <ul className="msg-highlight">
+                  {messages[user.uid] && messages[user.uid].length > 0 && (
+                    <li
+                      key={messages[user.uid][0].id}
+                      style={{
+                        fontWeight: messages[user.uid][0].senderId !== currentUser.uid && messages[user.uid][0].read === false
+                          ? "bold"
+                          : "normal",
+                      }}
+                    >
+                      {messages[user.uid][0].content.length > 1
+                        ? `${messages[user.uid][0].content.substring(0, 20)}...`
+                        : messages[user.uid][0].content}
+                    </li>
+                  )}
                 </ul>
                 <Lottie
                   animationData={Chat}
@@ -205,7 +224,7 @@ const UserList = () => {
           ) : (
             filteredUsers.map((user) => (
               <li
-                key={user.id}
+                key={user.uid}
                 onClick={() => startPrivateChat(currentUser, user)}
               >
                 <img
@@ -213,15 +232,25 @@ const UserList = () => {
                   alt={`${user.userName}'s profile`}
                 />
                 <span>{user.userName}</span>
-                {messages[user.id]?.some(
+                {messages[user.uid]?.some(
                   (msg) =>
                     msg.senderId !== currentUser.uid && msg.read === false
                 ) && <span className="new-message-indicator">New</span>}
-                <ul>
-                  {messages[user.id] &&
-                    messages[user.id].map((message, index) => (
-                      <li key={index}>{message.content}</li>
-                    ))}
+                <ul className="msg-highlight">
+                  {messages[user.uid] && messages[user.uid].length > 0 && (
+                    <li
+                      key={messages[user.uid][0].id}
+                      style={{
+                        fontWeight: messages[user.uid][0].senderId !== currentUser.uid && messages[user.uid][0].read === false
+                          ? "bold"
+                          : "normal",
+                      }}
+                    >
+                      {messages[user.uid][0].content.length > 1
+                        ? `${messages[user.uid][0].content.substring(0, 5)}...`
+                        : messages[user.uid][0].content}
+                    </li>
+                  )}
                 </ul>
                 <Lottie
                   animationData={Chat}
