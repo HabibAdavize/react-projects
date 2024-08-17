@@ -60,7 +60,9 @@ const UserList = () => {
               chatData.participants.forEach((participantId) => {
                 // Only store messages for the current user
                 if (participantId === currentUser.uid) {
-                  messagesData[chatData.participants.find(uid => uid !== currentUser.uid)] = chatMessages;
+                  messagesData[
+                    chatData.participants.find((uid) => uid !== currentUser.uid)
+                  ] = chatMessages;
                 }
               });
 
@@ -150,12 +152,7 @@ const UserList = () => {
   return (
     <>
       <div className="user-list-toggle">
-        <input type="checkbox" id="checkbox" onChange={toggleUserList} />
-        <label htmlFor="checkbox" className="toggle">
-          <div className="bar bar--top"></div>
-          <div className="bar bar--middle"></div>
-          <div className="bar bar--bottom"></div>
-        </label>
+        <span onClick={toggleUserList} class="material-symbols-outlined">arrow_drop_down_circle</span>
       </div>
       <div className={`user-list ${isUserListVisible ? "visible" : "hidden"}`}>
         <h2>Users</h2>
@@ -188,9 +185,11 @@ const UserList = () => {
                     <li
                       key={messages[user.uid][0].id}
                       style={{
-                        fontWeight: messages[user.uid][0].senderId !== currentUser.uid && messages[user.uid][0].read === false
-                          ? "bold"
-                          : "normal",
+                        fontWeight:
+                          messages[user.uid][0].senderId !== currentUser.uid &&
+                          messages[user.uid][0].read === false
+                            ? "bold"
+                            : "normal",
                       }}
                     >
                       {messages[user.uid][0].content.length > 1
@@ -241,9 +240,11 @@ const UserList = () => {
                     <li
                       key={messages[user.uid][0].id}
                       style={{
-                        fontWeight: messages[user.uid][0].senderId !== currentUser.uid && messages[user.uid][0].read === false
-                          ? "bold"
-                          : "normal",
+                        fontWeight:
+                          messages[user.uid][0].senderId !== currentUser.uid &&
+                          messages[user.uid][0].read === false
+                            ? "bold"
+                            : "normal",
                       }}
                     >
                       {messages[user.uid][0].content.length > 1

@@ -75,12 +75,13 @@ const Login = () => {
                 placeholder="Password"
                 required
               />
-              <div
-                onClick={togglePasswordVisibility}
-                className="visibility-icon"
-              >
-                <Lottie animationData={Visibility} />
-              </div>
+              <span onClick={togglePasswordVisibility}>
+                {showPassword ? (
+                  <span class="material-symbols-outlined">visibility_off</span>
+                ) : (
+                  <span class="material-symbols-outlined">visibility</span>
+                )}
+              </span>
             </div>
             <span className="btn-span">
               <button type="submit">Login</button>

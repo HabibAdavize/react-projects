@@ -12,13 +12,25 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [imageSrc, setImageSrc] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     setProfilePicture(e.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setImageSrc(reader.result); // Set the image URL
+      };
+
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
   };
 
   const createUserProfile = async (user) => {
@@ -34,6 +46,10 @@ const Register = () => {
       throw new Error("Failed to create user profile.");
     }
   };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -119,15 +135,35 @@ const Register = () => {
               placeholder="Email"
               required
             />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-            />
-            <span>Upload Profile Picture:</span>
-            <input type="file" onChange={handleFileChange} accept="image/*" />
+            <div className="passinput-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+              />
+              <span onClick={togglePasswordVisibility}>
+                {showPassword ? (
+                  <span class="material-symbols-outlined">visibility_off</span>
+                ) : (
+                  <span class="material-symbols-outlined">visibility</span>
+                )}
+              </span>
+            </div>
+
+            <label htmlFor="file-upload" className="file-upload-label">
+              <input
+                type="file"
+                id="file-upload"
+                accept="image/*"
+                className="file-upload-input"
+                onChange={handleFileChange}
+              />
+              <span class="material-symbols-outlined">add_photo_alternate</span>
+              <span>Upload Profile Picture:</span> {imageSrc && <img src={imageSrc} alt="Uploaded Preview" className="image-preview" />}
+            </label>
+            
             <span className="btn-span">
               <button type="submit" disabled={loading}>
                 {loading ? "Registering..." : "Register"}

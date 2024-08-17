@@ -195,7 +195,7 @@ const ChatPage = () => {
           ) : (
             <div className="welcome-message">
               <h2>Welcome, {currentUser?.displayName || "User"}!</h2>
-              <p>Please select a chat to start messaging.</p>
+              <p>Please click on the toogle left/above<span class="material-symbols-outlined">arrow_drop_down_circle</span> select a chat to start messaging.</p>
             </div>
           )}
         </div>
