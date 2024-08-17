@@ -14,7 +14,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
-  const [imageSrc, setImageSrc] = useState('');
+  const [imageSrc, setImageSrc] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -49,7 +49,6 @@ const Register = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -106,70 +105,88 @@ const Register = () => {
         <Preloader />
       ) : (
         <>
-          <h2>Register</h2>
-          <form onSubmit={handleSubmit}>
-            {error && (
-              <p
-                style={{ color: "red", display: "flex", alignItems: "center" }}
-              >
-                {error}
-                <Lottie
-                  animationData={Alert}
-                  loop={true}
-                  autoplay={true}
-                  style={{ width: 24, height: 24 }}
-                />
-              </p>
-            )}
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Username"
-              required
-            />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-            />
-            <div className="passinput-container">
+          <>
+            <h2>Register</h2>
+            <form onSubmit={handleSubmit}>
+              {error && (
+                <p
+                  style={{
+                    color: "red",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {error}
+                  <Lottie
+                    animationData={Alert}
+                    loop={true}
+                    autoplay={true}
+                    style={{ width: 24, height: 24 }}
+                  />
+                </p>
+              )}
               <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Username"
                 required
               />
-              <span onClick={togglePasswordVisibility}>
-                {showPassword ? (
-                  <span class="material-symbols-outlined">visibility_off</span>
-                ) : (
-                  <span class="material-symbols-outlined">visibility</span>
-                )}
-              </span>
-            </div>
-
-            <label htmlFor="file-upload" className="file-upload-label">
               <input
-                type="file"
-                id="file-upload"
-                accept="image/*"
-                className="file-upload-input"
-                onChange={handleFileChange}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                required
               />
-              <span class="material-symbols-outlined">add_photo_alternate</span>
-              <span>Upload Profile Picture:</span> {imageSrc && <img src={imageSrc} alt="Uploaded Preview" className="image-preview" />}
-            </label>
-            
-            <span className="btn-span">
-              <button type="submit" disabled={loading}>
-                {loading ? "Registering..." : "Register"}
-              </button>
-            </span>
-          </form>
+              <div className="passinput-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required
+                />
+                <span onClick={togglePasswordVisibility}>
+                  {showPassword ? (
+                    <span class="material-symbols-outlined">
+                      visibility_off
+                    </span>
+                  ) : (
+                    <span class="material-symbols-outlined">visibility</span>
+                  )}
+                </span>
+              </div>
+
+              <label htmlFor="file-upload" className="file-upload-label">
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept="image/*"
+                  className="file-upload-input"
+                  onChange={handleFileChange}
+                />
+                <span class="material-symbols-outlined">
+                  add_photo_alternate
+                </span>
+                <span>Upload Profile Picture:</span>{" "}
+                {imageSrc && (
+                  <img
+                    src={imageSrc}
+                    alt="Uploaded Preview"
+                    className="image-preview"
+                  />
+                )}
+              </label>
+
+              <span className="btn-span">
+                <button type="submit" disabled={loading}>
+                  {loading ? "Registering..." : "Register"}
+                </button>
+              </span>
+            </form>
+          </>
+          <footer>Developed By Habib Abdulkareem</footer>
         </>
       )}
     </div>

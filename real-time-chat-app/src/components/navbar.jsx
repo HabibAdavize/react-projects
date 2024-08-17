@@ -20,7 +20,7 @@ const Navbar = ({ onToggleTheme, isDarkMode }) => {
 
   return (
     <div className="nav-wrapper">
-      <h1>eX Connect</h1>
+      <h1>eX Cnt</h1>
       <nav>
         {currentUser ? (
           <div className="and-wrapper">

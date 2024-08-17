@@ -45,48 +45,57 @@ const Login = () => {
         </>
       ) : (
         <>
-          <h2>Login</h2>
-          <form onSubmit={handleSubmit}>
-            {error && (
-              <p
-                style={{ color: "red", display: "flex", alignItems: "center" }}
-              >
-                {error}
-                <Lottie
-                  animationData={Alert}
-                  loop={true}
-                  autoplay={true}
-                  style={{ width: 24, height: 24 }}
-                />
-              </p>
-            )}
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-            />
-            <div className="passinput-container">
+          <>
+            <h2>Login</h2>
+            <form onSubmit={handleSubmit}>
+              {error && (
+                <p
+                  style={{
+                    color: "red",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {error}
+                  <Lottie
+                    animationData={Alert}
+                    loop={true}
+                    autoplay={true}
+                    style={{ width: 24, height: 24 }}
+                  />
+                </p>
+              )}
               <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
                 required
               />
-              <span onClick={togglePasswordVisibility}>
-                {showPassword ? (
-                  <span class="material-symbols-outlined">visibility_off</span>
-                ) : (
-                  <span class="material-symbols-outlined">visibility</span>
-                )}
+              <div className="passinput-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required
+                />
+                <span onClick={togglePasswordVisibility}>
+                  {showPassword ? (
+                    <span class="material-symbols-outlined">
+                      visibility_off
+                    </span>
+                  ) : (
+                    <span class="material-symbols-outlined">visibility</span>
+                  )}
+                </span>
+              </div>
+              <span className="btn-span">
+                <button type="submit">Login</button>
               </span>
-            </div>
-            <span className="btn-span">
-              <button type="submit">Login</button>
-            </span>
-          </form>
+            </form>
+          </>
+          <footer>Developed By Habib Abdulkareem</footer>
         </>
       )}
     </div>
