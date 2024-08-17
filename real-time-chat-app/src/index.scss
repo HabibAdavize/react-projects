@@ -208,7 +208,7 @@ nav {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 70%;
+    max-width: 60%;
     transform: translate(-50%, -50%);
     background: transperent;
     backdrop-filter: blur(10px);
